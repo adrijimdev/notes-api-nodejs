@@ -1,0 +1,15 @@
+{
+  "name": "prueba-tecnica-adrian-j",
+  "version": "1.0.0",
+  "description": "**La tarea la puedes encontrar dentro del repositorio en formato PDF.**",
+  "main": "prueba.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
