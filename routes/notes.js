@@ -1,30 +1,8 @@
-const mongoose = require('mongoose'); 
-const express = require('express'); //importación del módulo express.js
-require('dotenv').config();
-const app = express(); //crea una instancia de express donde se definirán las rutas
-app.use(express.json()); //middleware que interpreta el cuerpo de las solicitudes como json
+const express = require('express');
+const router = express.Router();
+const Note = require('../models/Note');
 
-const MONGO_URI = process.env.MONGO_URI;
-
-//para poder ejecutar el servidor local con node.js
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`servidor activo en puerto ${PORT}`);
-});
-
-mongoose.connect(MONGO_URI)
-    .then(() => console.log('Conexión correcta a MongoDB'))
-    .catch(err => console.error('Error al conectar a MongoDB:', err));
-
-const noteSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    content: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-});
-
-const Note = mongoose.model('Note', noteSchema);
-
-app.post('/notes', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { title, content } = req.body;
         if (!title || !content) {
@@ -41,7 +19,7 @@ app.post('/notes', async (req, res) => {
 });
 
 //obtener todas las notas
-app.get('/notes', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const notes = await Note.find();
         res.json(notes);
@@ -51,7 +29,7 @@ app.get('/notes', async (req, res) => {
 });
 
 //obtener nota concreta
-app.get('/notes/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const note = await Note.findById(id);
@@ -67,7 +45,7 @@ app.get('/notes/:id', async (req, res) => {
 });
 
 //modificar nota
-app.put('/notes/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { title, content } = req.body;
@@ -92,7 +70,7 @@ app.put('/notes/:id', async (req, res) => {
 });
 
 //eliminar nota
-app.delete('/notes/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const deletedNote = await Note.findByIdAndDelete(id);
@@ -104,3 +82,5 @@ app.delete('/notes/:id', async (req, res) => {
         res.status(500).json({ error: 'Error eliminando la nota' });
     }
 });
+
+module.exports = router;
