@@ -4,16 +4,16 @@ const Note = require('../models/Note');
 
 router.post('/', async (req, res) => {
     try {
-        const { title, content } = req.body;
-        if (!title || !content) {
-            return res.status(400).json({ error: 'Tu nota debe tener título y contenido' });
+        const { title, content, userId } = req.body;
+        if (!title || !content || !userId) {
+            return res.status(400).json({ error: 'La nota debe tener título, contenido y un userId' });
         }
-        
-        const newNote = new Note({ title, content });
+
+        const newNote = new Note({ title, content, userId });
         const savedNote = await newNote.save();
         res.status(201).json(savedNote);
-    }
-    catch (error) {
+    } catch (error) {
+        console.error('Error al crear la nota:', error);
         res.status(500).json({ error: 'Error al crear la nota' });
     }
 });
