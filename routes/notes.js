@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Note = require('../models/Note');
+const note = require('../models/Note');
 
 router.post('/', async (req, res) => {
     try {
@@ -25,6 +26,23 @@ router.get('/', async (req, res) => {
         res.json(notes);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las notas' });
+    }
+});
+
+//obtener todas las notas de un usuario concreto
+router.get('/userNotes/:userId', async (req, res) => {
+    try {
+        //extraigo de la petición el userId y busco las notas cuyo valor userId coincida con el userId enviado en la petición
+        const { userId } = req.params;
+        const note = await Note.find({userId});
+
+        if (!note) {
+            return res.status(404).json({ error: "No se encuentran notas asociadas al usuario" })
+        }
+
+        res.json(note); 
+    } catch {
+        return res.status(500).json({ error: "Error obteniendo las notas"} )
     }
 });
 
